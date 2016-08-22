@@ -10,17 +10,25 @@
 # afio 用に multiverseのリポジトリを用意
 # distribution　の version を確認する
 #
-distri = "trusty"
-if node['platform_version'] == "12.04" then
-  distri = "precise"
-end
 
-apt_repository 'multiverse' do
-  uri          'http://jp.archive.ubuntu.com/ubuntu'
-  distribution distri
-  components   ['multiverse']
-  deb_src      true
-  action :add
+case node["platform_family"]
+when "debian"
+  # do things on debian-ish platforms (debian, ubuntu, linuxmint)
+  distri = "trusty"
+  if node['platform_version'] == "12.04" then
+    distri = "precise"
+  end
+
+  apt_repository 'multiverse' do
+    uri          'http://jp.archive.ubuntu.com/ubuntu'
+    distribution distri
+    components   ['multiverse']
+    deb_src      true
+    action :add
+  end
+
+when "rhel"
+  # do things on RHEL platforms (redhat, centos, scientific, etc)
 end
 
 # commonアプリケーションのインストール
